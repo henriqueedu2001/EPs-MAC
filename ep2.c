@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include "EstruturasDinamicas.c"
 
+/* armazena uma única instância do problemas */
+typedef struct Instancia {
+    matriz_int caca_palavras;
+    vetor_string palavras; } instancia;
+
+
+/* armazena todas as instâncias do problema */
+typedef struct Conjunto_Instancias {
+    int quantidade;
+    instancia* casos; } conjunto_instancias;
+
 /* Posição espacial do vetor em relação a uma matriz
 orientacao = 'v' para vertical e 'h' para horizontal
 linha e coluna indicam coordenadas
@@ -13,7 +24,7 @@ typedef struct Posicao {
 
 /* OPERAÇÕES DE ALTO NÍVEL */
 
-void LerDados();
+void ler_dados();
 void ResolverInstancia();
 
 /* OPERAÇÕES DE BAIXO NÍVEL */
@@ -22,22 +33,40 @@ void set_posicao(posicao *pos, char orientacao, int linha, int coluna);
 int insercao_valida(string str, matriz_char matriz, posicao pos);
 
 int main(){
-    matriz_char m;
-    string str;
-    posicao pos;
-    alocar_matriz_char(&m, 4, 4);
-    scanf_matriz_char(&m);
-    scanf_string(&str);
-    set_posicao(&pos, 'h', 3, 2);
-    if(insercao_valida(str, m, pos) == 1){
-        escrever_string_matriz(str, &m, pos);
-        printar_matriz_char(m);
-    } else {
-        printf("insercao invalida\n");
-    }
-    /* escrever_string_matriz(str, &m, pos);*/
-    printar_matriz_char(m);
+    ler_dados();
     return 0;
+}
+
+/* faz a leitura de todas as instâncias */
+void ler_dados(){
+    int indice_instancia = 0;
+    matriz_int matriz;
+    int linhas, colunas;
+    vetor_string palavras;
+    int qtd_palavras;
+    conjunto_instancias conjunto;
+    instancia inst;
+    while(1){
+        scanf(" %d %d", &linhas, &colunas);
+        if(linhas == 0 && colunas == 0)
+            break;
+        else {
+            /* leitura da matriz */
+            alocar_matriz_int(&matriz, linhas, colunas);
+            scanf_matriz_int(&matriz);
+            /* leitura das palavras */
+            scanf(" %d", &qtd_palavras);
+            alocar_vetor_string(&palavras, qtd_palavras);
+            scanf_vetor_string(&palavras);
+        }
+        
+        inst.caca_palavras = matriz;
+        inst.palavras = palavras;
+        indice_instancia++;
+        printar_matriz_int(inst.caca_palavras);
+        printar_vetor_string(inst.palavras);
+        /* falta registrar isso no vetor de instâncias */
+    }
 }
 
 /* escreve a string str na matriz de caracteres na posição pos = (x,y,orientação) */
@@ -65,19 +94,6 @@ int insercao_valida(string str, matriz_char matriz, posicao pos){
             return 0;
     }
     /* verificação de compatibilidade de letras */
-    int i;
-    char novo_elemento;
-    for(i = 0; i < str.tamanho; i++){
-        novo_elemento = str.conteudo[i];
-        if(pos.orientacao = 'v'){
-            
-        } else if(pos.orientacao = 'h'){
-
-        }
-        if(matriz.lista[pos.linha + i][pos.coluna] != novo_elemento){
-
-        }
-    }
     return veredito;
 }
 
