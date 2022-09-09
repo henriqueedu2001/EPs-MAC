@@ -4,12 +4,21 @@
 
 /* 
 Este arquivo apresenta uma série de estruturas dinâmicas que permitem 
-operações mais alto nível de modo simplificado. São elas:
+operações mais alto nível de modo simplificado.
+Das estruturas, temos:
     1 - Vetores de inteiros
     2 - Strings
     3 - Matrizes de Inteiros
     4 - Matrizes de Caracteres
     5 - Pilha de Inteiros
+    6 - Vetor de strings
+Para cada uma delas, temos métodos especiais:
+    1 - Alocação Dinâmica (todas)
+    2 - Leitura de Entradas (matrizes e vetores)
+    3 - Exibição de Conteúdo (todas)
+    4 - Operações empilhar e desempilhar (pilhas)
+    5 - Adição de elementos (vetores)
+    6 - Escrita de vetor em matriz
 */
 
 /* vetor de elementos inteiros */
@@ -20,7 +29,7 @@ typedef struct Vetor_int {
 
 /* vetor de caracteres (string) */
 typedef struct String {
-    char *lista; 
+    char *conteudo; 
     int tamanho; } 
     string;
 
@@ -42,19 +51,30 @@ typedef struct Pilha_int {
     int tamanho; 
     int topo; } pilha_int;
 
+/* vetor de strings */
+typedef struct Vetor_string {
+    char **lista; 
+    int tamanho; } vetor_string;
+
+#define MAX_STR_SIZE 200
+
 /* funções de alocação dinâmica*/
 
 void alocar_vetor_int(vetor_int *vetor, int tamanho);
 void alocar_matriz_int(matriz_int *matriz, int linhas, int colunas);
 void alocar_matriz_char(matriz_char *matriz, int linhas, int colunas);
 void alocar_pilha_int(pilha_int *pilha);
+void alocar_string(string *str);
+void alocar_vetor_string(vetor_string *vetor, int tamanho);
 
 /* funções de exibição das estruturas */
 
 void printar_vetor_int(vetor_int vetor);
+void printar_string(string str);
 void printar_matriz_int(matriz_int matriz);
 void printar_matriz_char(matriz_char matriz);
 void printar_pilha_int(pilha_int pilha);
+void printar_vetor_string(vetor_string vetor);
 
 /* funções de leitura para registro nas estruturas */
 
@@ -62,6 +82,7 @@ void scanf_vetor_int(vetor_int *vetor);
 void scanf_string(string *str);
 void scanf_matriz_int(matriz_int *matriz);
 void scanf_matriz_char(matriz_char *matriz);
+void scanf_vetor_string(vetor_string *vetor);
 
 /* métodos específicos de cada estrutura */
 
@@ -104,6 +125,18 @@ void alocar_pilha_int(pilha_int *pilha){
     pilha->topo = -1;
 }
 
+/* aloca uma string de tamanho definido */
+void alocar_string(string *str){
+    str->conteudo = malloc(MAX_STR_SIZE*sizeof(char));
+    str->tamanho = MAX_STR_SIZE;
+}
+
+/* aloca um vetor de strings */
+void alocar_vetor_string(vetor_string *vetor, int tamanho){
+    vetor->lista = malloc(tamanho*sizeof(char*));
+    vetor->tamanho = tamanho;
+}
+
 /* BLOCO DAS FUNÇÕES DE EXIBIÇÃO DAS ESTRUTURAS */
 
 /* exibe todos os valores do vetor */
@@ -116,7 +149,7 @@ void printar_vetor_int(vetor_int vetor){
 
 /* imprime a string */
 void printar_string(string str){
-    printf("%s\n", str.lista);
+    printf("%s\n", str.conteudo);
 }
 
 /* exibe todos os valores da matriz de inteiros */
@@ -152,6 +185,13 @@ void printar_pilha_int(pilha_int pilha){
     }
 }
 
+/* exibe todas as strings do vetor */
+void printar_vetor_string(vetor_string vetor){
+    int i = 0;
+    for(i = 0; i < vetor.tamanho; i++)
+        printf("%s\n", vetor.lista[i]);
+}
+
 /* BLOCO DAS FUNÇÕES DE LEITURA PARA REGISTRO NAS ESTRUTURAS */
 
 /* faz a leitura das entradas e as registra no vetor*/
@@ -163,8 +203,10 @@ void scanf_vetor_int(vetor_int *vetor){
 
 /* faz leitura da string e a registra na estrutura */
 void scanf_string(string *str){
-    scanf("%s", (*str).lista);
-    str->tamanho = strlen(str->lista);
+    char temp[] = "";
+    scanf(" %s", temp);
+    str->conteudo = temp;
+    str->tamanho = strlen(temp);
 }
 
 /* faz leitura da string */
@@ -181,6 +223,19 @@ void scanf_matriz_char(matriz_char *matriz){
     for(i = 0; i < matriz->linhas; i++)
         for(j = 0; j < matriz->colunas; j++)
             scanf(" %c", &matriz->lista[i][j]);
+}
+
+/* faz a leitura das entradas e as registra no vetor */
+void scanf_vetor_string(vetor_string *vetor){
+    int i = 0;
+    char **aux;
+    aux = malloc(vetor->tamanho*sizeof(char*));
+
+    for(i = 0; i < vetor->tamanho; i++){
+        aux[i] = malloc(MAX_STR_SIZE*sizeof(char));
+        scanf(" %s", aux[i]);
+        vetor->lista[i] = aux[i];
+    }
 }
 
 /* BLOCO DOS MÉTODOS ESPECÍFICOS DE CADA ESTRUTURA */
