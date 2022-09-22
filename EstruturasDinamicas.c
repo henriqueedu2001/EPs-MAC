@@ -198,7 +198,7 @@ void printar_vetor_string(vetor_string vetor){
 void scanf_vetor_int(vetor_int *vetor){
     int i = 0;
     for(i = 0; i < (*vetor).tamanho; i++)
-        scanf("%d", &(*vetor).lista[i]);
+        scanf(" %d", &(*vetor).lista[i]);
 }
 
 /* faz leitura da string e a registra na estrutura */
@@ -214,7 +214,7 @@ void scanf_matriz_int(matriz_int *matriz){
     int i, j;
     for(i = 0; i < matriz->linhas; i++)
         for(j = 0; j < matriz->colunas; j++)
-            scanf("%d", &matriz->lista[i][j]);
+            scanf(" %d", &matriz->lista[i][j]);
 }
 
 /* faz leitura de uma matriz de caracteres, com dimensões já definidas */
@@ -256,7 +256,7 @@ int pilha_vazia(pilha_int p){
 
 /* aloca mais uma posição na pilha (no topo) e insere o item nela */
 void empilhar(pilha_int *pilha, int item){
-    pilha->lista = realloc(pilha->lista, sizeof(int));
+    pilha->lista = realloc(pilha->lista, (pilha->tamanho + 1)*sizeof(int));
     pilha->tamanho += 1;
     pilha->topo += 1;
     pilha->lista[pilha->topo] = item;
