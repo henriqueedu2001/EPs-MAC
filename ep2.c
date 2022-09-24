@@ -31,9 +31,17 @@ void ResolverInstancia();
 void escrever_string_matriz(string str, matriz_char *matriz, posicao pos);
 void set_posicao(posicao *pos, char orientacao, int linha, int coluna);
 int insercao_valida(string str, matriz_char matriz, posicao pos);
+int indice(int linhas, int colunas, posicao pos);
 
 int main(){
-    ler_dados();
+    int x, y;
+    int n, m;
+    char o;
+    scanf(" %d %d %c %d %d", &x, &y, &o, &n, &m);
+    posicao pos;
+    set_posicao(&pos, o, x, y);
+    printf("%d", indice(n, m, pos));
+    // ler_dados();
     return 0;
 }
 
@@ -59,14 +67,29 @@ void ler_dados(){
             alocar_vetor_string(&palavras, qtd_palavras);
             scanf_vetor_string(&palavras);
         }
-        
+        inst.caca_palavras = matriz;
+        inst.palavras = palavras;
+        ResolverInstancia(inst);
+        /*
         inst.caca_palavras = matriz;
         inst.palavras = palavras;
         indice_instancia++;
         printar_matriz_int(inst.caca_palavras);
-        printar_vetor_string(inst.palavras);
+        printar_vetor_string(inst.palavras);*/
         /* falta registrar isso no vetor de instâncias */
     }
+}
+
+
+void ResolverInstancia(instancia inst){
+    printf("Resolvendo Instância:\n");
+    printar_matriz_int(inst.caca_palavras);
+    printar_vetor_string(inst.palavras);
+    posicao pos;
+    pos.linha = 1;
+    pos.coluna = 2;
+    pos.orientacao = 'v';
+    printf("%d\n", indice(inst.caca_palavras.linhas, inst.caca_palavras.colunas, pos));
 }
 
 /* escreve a string str na matriz de caracteres na posição pos = (x,y,orientação) */
@@ -102,4 +125,16 @@ void set_posicao(posicao *pos, char orientacao, int linha, int coluna){
     pos->orientacao = orientacao;
     pos->linha = linha;
     pos->coluna = coluna;
+}
+
+/* retorna um índice que corresponde à pos = (x,y,o) para uma matriz n por m */
+int indice(int linhas, int colunas, posicao pos){
+    int x = pos.linha;
+    int y = pos.coluna;
+    int o;
+    if(pos.orientacao == 'v')
+        o = 1;
+    else
+        o = 0;
+    return 1 + x + y*linhas + linhas*colunas*o;
 }
