@@ -32,15 +32,14 @@ void escrever_string_matriz(string str, matriz_char *matriz, posicao pos);
 void set_posicao(posicao *pos, char orientacao, int linha, int coluna);
 int insercao_valida(string str, matriz_char matriz, posicao pos);
 int indice(int linhas, int colunas, posicao pos);
+posicao pos(int indice, int linhas, int colunas);
 
 int main(){
-    int x, y;
-    int n, m;
-    char o;
-    scanf(" %d %d %c %d %d", &x, &y, &o, &n, &m);
-    posicao pos;
-    set_posicao(&pos, o, x, y);
-    printf("%d", indice(n, m, pos));
+    int n, m, i;
+    scanf(" %d %d %d", &n, &m, &i);
+    posicao p;
+    p = pos(i, n, m);
+    printf("%d %d %c", p.linha, p.coluna, p.orientacao);
     // ler_dados();
     return 0;
 }
@@ -137,4 +136,20 @@ int indice(int linhas, int colunas, posicao pos){
     else
         o = 0;
     return 1 + x + y*linhas + linhas*colunas*o;
+}
+
+/* retorna a posição pos = (x,y,o) correspondente ao índice na matriz n por m */
+posicao pos(int indice, int linhas, int colunas){
+    posicao p;
+    
+    if(indice <= linhas*colunas){
+        int x = ((indice - 1) % linhas);
+        int y = indice/colunas;
+        set_posicao(&p, 'h', x, y);
+    } else {
+        int x = ((indice - 1) % linhas);
+        int y = (indice - linhas*colunas)/colunas;
+        set_posicao(&p, 'v', x, y);
+    }
+    return p;
 }
