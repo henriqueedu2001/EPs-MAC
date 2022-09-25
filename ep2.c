@@ -35,12 +35,8 @@ int indice(int linhas, int colunas, posicao pos);
 posicao pos(int indice, int linhas, int colunas);
 
 int main(){
-    int n, m, i;
-    scanf(" %d %d %d", &n, &m, &i);
-    posicao p;
-    p = pos(i, n, m);
-    printf("%d %d %c", p.linha, p.coluna, p.orientacao);
-    // ler_dados();
+    ler_dados();
+    
     return 0;
 }
 
@@ -79,16 +75,46 @@ void ler_dados(){
     }
 }
 
-
 void ResolverInstancia(instancia inst){
-    printf("Resolvendo Instância:\n");
-    printar_matriz_int(inst.caca_palavras);
-    printar_vetor_string(inst.palavras);
-    posicao pos;
-    pos.linha = 1;
-    pos.coluna = 2;
-    pos.orientacao = 'v';
-    printf("%d\n", indice(inst.caca_palavras.linhas, inst.caca_palavras.colunas, pos));
+    printf("Resolvendo Instancia:\n");
+    //printar_matriz_int(inst.caca_palavras);
+    //printar_vetor_string(inst.palavras);
+    vetor_int montagem;
+    alocar_vetor_int(&montagem, inst.palavras.tamanho);
+    matriz_char solucao;
+    alocar_matriz_char(&solucao, inst.caca_palavras.linhas, inst.caca_palavras.colunas);
+
+    /* inicializa com '*' nas posições em que temos -1 */
+    int i, j;
+    for(i = 0; i < inst.caca_palavras.linhas; i++){
+        for(j = 0; j < inst.caca_palavras.colunas; j++){
+            if(inst.caca_palavras.lista[i][j] == -1)
+                solucao.lista[i][j] = '*';
+            else
+                solucao.lista[i][j] = ' ';
+        }
+    }
+    
+    printf("digite a solucao:\n");
+    scanf_vetor_int(&montagem);
+    printar_vetor_int(montagem);
+
+    /* escreve a lista na matriz */
+    for(i = 0; i < inst.palavras.tamanho; i++){
+        posicao p;
+        string palavra;
+        printar_matriz_char(solucao);
+        if(montagem.lista[i] != 0){
+            palavra.conteudo = inst.palavras.lista[i];
+            palavra.tamanho = strlen(inst.palavras.lista[i]);
+            p = pos(montagem.lista[i], inst.caca_palavras.linhas, inst.caca_palavras.colunas);
+            escrever_string_matriz(palavra, &solucao, p);
+        }
+        printf("\n");
+    }
+    /*  */
+
+    printar_matriz_char(solucao);
 }
 
 /* escreve a string str na matriz de caracteres na posição pos = (x,y,orientação) */
@@ -97,10 +123,12 @@ void escrever_string_matriz(string str, matriz_char *matriz, posicao pos){
     char novo_elemento;
     for(i = 0; i < str.tamanho; i++){
         novo_elemento = str.conteudo[i];
-        if(pos.orientacao == 'v')
+        if(pos.orientacao == 'v'){
             matriz->lista[pos.linha + i][pos.coluna] = novo_elemento;
-        else
+        }
+        else if(pos.orientacao == 'h'){
             matriz->lista[pos.linha][pos.coluna + i] = novo_elemento;
+        }
     }
 }
 
@@ -144,11 +172,11 @@ posicao pos(int indice, int linhas, int colunas){
     
     if(indice <= linhas*colunas){
         int x = ((indice - 1) % linhas);
-        int y = indice/colunas;
+        int y = (indice - 1)/colunas;
         set_posicao(&p, 'h', x, y);
     } else {
         int x = ((indice - 1) % linhas);
-        int y = (indice - linhas*colunas)/colunas;
+        int y = (indice - (linhas*colunas) - 1)/colunas;
         set_posicao(&p, 'v', x, y);
     }
     return p;
