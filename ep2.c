@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "EstruturasDinamicas.c"
 
+#define DB(A) printf("debug line = %d\n", A);
+
 /* armazena uma única instância do problemas */
 typedef struct Instancia {
     matriz_int caca_palavras;
@@ -33,6 +35,24 @@ void set_posicao(posicao *pos, char orientacao, int linha, int coluna);
 int insercao_valida(string str, matriz_char matriz, posicao pos);
 int indice(int linhas, int colunas, posicao pos);
 posicao pos(int indice, int linhas, int colunas);
+
+int ok(vetor_int v, pilha_int p){
+    int i, j;
+    for(i = 0; i < p.tamanho; i++){
+        for(j = i + 1; j < p.tamanho; j++){
+            if(p.lista[i] == p.lista[j])
+                return 0;
+        }
+    }
+    return 1;
+}
+
+void print_seq(vetor_int v, pilha_int p){
+    int i;
+    for(i = 0; i < p.tamanho; i++){
+        printf("%d ", v.lista[p.lista[i]]);
+    }
+}
 
 int main(){
     ler_dados();
@@ -99,7 +119,9 @@ void ResolverInstancia(instancia inst){
     scanf_vetor_int(&montagem);
     printar_vetor_int(montagem);
 
-    /* escreve a lista na matriz */
+    /* gera os números */
+    
+    /* escreve a solução na matriz */
     for(i = 0; i < inst.palavras.tamanho; i++){
         posicao p;
         string palavra;
@@ -154,7 +176,7 @@ void set_posicao(posicao *pos, char orientacao, int linha, int coluna){
     pos->coluna = coluna;
 }
 
-/* retorna um índice que corresponde à pos = (x,y,o) para uma matriz n por m */
+/* retorna um índice que corresponde à pos = (linha,coluna,o) para uma matriz n por m */
 int indice(int linhas, int colunas, posicao pos){
     int x = pos.linha;
     int y = pos.coluna;
@@ -166,7 +188,7 @@ int indice(int linhas, int colunas, posicao pos){
     return 1 + x + y*linhas + linhas*colunas*o;
 }
 
-/* retorna a posição pos = (x,y,o) correspondente ao índice na matriz n por m */
+/* retorna a posição pos = (linha,coluna,o) correspondente ao índice na matriz n por m */
 posicao pos(int indice, int linhas, int colunas){
     posicao p;
     

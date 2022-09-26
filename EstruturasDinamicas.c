@@ -256,10 +256,26 @@ int pilha_vazia(pilha_int p){
 
 /* aloca mais uma posição na pilha (no topo) e insere o item nela */
 void empilhar(pilha_int *pilha, int item){
+    /*
     pilha->lista = realloc(pilha->lista, (pilha->tamanho + 1)*sizeof(int));
     pilha->tamanho += 1;
     pilha->topo += 1;
+    printf("%d %d\n", pilha->tamanho, pilha->topo);
+    printf("%d\n", pilha->lista[0]);
     pilha->lista[pilha->topo] = item;
+    printf("%d\n", 5);
+    */
+    int novo_tamanho = 1 + pilha->tamanho;
+    int *nova_lista = malloc(novo_tamanho*sizeof(int));
+    int i;
+    for(i = 0; i < novo_tamanho - 1; i++){
+        nova_lista[i] = pilha->lista[i];
+    }
+    nova_lista[novo_tamanho - 1] = item;
+    pilha->lista = nova_lista;
+    pilha->tamanho += 1;
+    pilha->topo += 1;
+
 }
 
 /* remove o item do topo da lista e libera o espaço da memória, caso não vazia */
