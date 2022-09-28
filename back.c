@@ -6,10 +6,17 @@
 
 int ok(vetor_int v, pilha_int p);
 void print_seq(vetor_int v, pilha_int p);
-void backtracking();
+pilha_int backtracking(vetor_int v, int tam_seq, int criterio(vetor_int vetor, pilha_int pilha));
 
 int main(){
-    backtracking();
+    vetor_int v;
+    alocar_vetor_int(&v, 4);
+    v.lista[0] = 1;
+    v.lista[1] = 1;
+    v.lista[2] = 1;
+    v.lista[3] = 1;
+    pilha_int pilha_sol = backtracking(v, 2, ok);
+    printar_pilha_int(pilha_sol);
     return 0;
 }
 
@@ -33,19 +40,11 @@ int ok(vetor_int v, pilha_int p){
 }
 
 
-void backtracking(){
-
+pilha_int backtracking(vetor_int v, int tam_seq, int criterio(vetor_int vetor, pilha_int pilha)){
     pilha_int p;
     alocar_pilha_int(&p);
     
-    vetor_int v;
-    alocar_vetor_int(&v, 4);
-    v.lista[0] = 1;
-    v.lista[1] = 1;
-    v.lista[2] = 1;
-    v.lista[3] = 1;
     int sol_count = 0;
-    int tam_seq = 3;
     /*
     # último elemento extrapola => remover e incrementar o anterior
     # caso contrário:
@@ -64,7 +63,7 @@ void backtracking(){
             else
                 p.lista[p.topo] += 1;
         } else {
-            if(ok(v, p) == 0){
+            if(criterio(v, p) == 0){
                 /* pilha não ok => incrementar último */
                 p.lista[p.topo] += 1;
             } else
@@ -74,17 +73,13 @@ void backtracking(){
                 else{
                     /* solução encontrada */
                     sol_count++;
-                    printf("sol: ");
-                    print_seq(v, p);
+                    return p;
                     p.lista[p.topo] += 1;
                 }
                     
         }
     }
-    if(sol_count == 0){
-        printf("no solutions\n");
-    } 
-    printf("fim!\n");
+    return p;
 }
 
 

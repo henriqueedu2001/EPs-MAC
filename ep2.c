@@ -28,12 +28,14 @@ typedef struct Posicao {
 
 void ler_dados();
 void ResolverInstancia();
+pilha_int GerarSolucao(instancia inst, vetor_int v, int tam_seq);
 
 /* OPERAÇÕES DE BAIXO NÍVEL */
 void escrever_string_matriz(string str, matriz_char *matriz, posicao pos);
 void set_posicao(posicao *pos, char orientacao, int linha, int coluna);
 int insercao_valida(string str, matriz_char matriz, posicao pos);
 int indice(int linhas, int colunas, posicao pos);
+int sequencia_valida(pilha_int p, instancia inst);
 posicao pos(int indice, int linhas, int colunas);
 
 int ok(vetor_int v, pilha_int p){
@@ -47,6 +49,46 @@ int ok(vetor_int v, pilha_int p){
     return 1;
 }
 
+int sequencia_valida(pilha_int p, instancia inst){
+    int r = 1;
+    printf("verificando se a seguinte configuração eh valida:\n");
+    printar_pilha_int(p);
+    
+    //printar_matriz_char(m);
+    int i = 0;
+    for(i = 0; i < p.tamanho; i++){
+        
+        string palavra;
+        palavra.conteudo = inst.palavras.lista[i];
+        palavra.tamanho = strlen(inst.palavras.lista[i]);
+        posicao posicao_palavra = pos(p.lista[i], inst.caca_palavras.linhas, inst.caca_palavras.colunas);
+        printf("palavra %s, pos = (%d, %d, %c)\n", inst.palavras.lista[i], posicao_palavra.linha, posicao_palavra.coluna, posicao_palavra.orientacao);
+        
+        /* critério de bordas */
+        switch (posicao_palavra.orientacao) {
+        case 'h':
+            if(posicao_palavra.coluna + strlen(inst.palavras.lista[i]) > inst.caca_palavras.colunas){
+                printf("comprimento muito longo na horizontal!\n", inst.palavras.lista[i]);
+                return 0;
+            }
+            break;
+        case 'v':
+            if(posicao_palavra.linha + strlen(inst.palavras.lista[i]) > inst.caca_palavras.linhas){
+                printf("comprimento muito longo na vertical!\n", inst.palavras.lista[i]);
+                return 0;
+            }
+            break;
+        default:
+            break;
+        }
+        
+        /* critério de sobreposição */
+        //printar_matriz_char(m);
+        //printf("verificando elemento %d %d\n", posicao_palavra.linha, posicao_palavra.coluna);
+    }
+    return r;
+}
+
 void print_seq(vetor_int v, pilha_int p){
     int i;
     for(i = 0; i < p.tamanho; i++){
@@ -56,7 +98,6 @@ void print_seq(vetor_int v, pilha_int p){
 
 int main(){
     ler_dados();
-    
     return 0;
 }
 
@@ -85,6 +126,7 @@ void ler_dados(){
         inst.caca_palavras = matriz;
         inst.palavras = palavras;
         ResolverInstancia(inst);
+
         /*
         inst.caca_palavras = matriz;
         inst.palavras = palavras;
@@ -99,8 +141,10 @@ void ResolverInstancia(instancia inst){
     printf("Resolvendo Instancia:\n");
     //printar_matriz_int(inst.caca_palavras);
     //printar_vetor_string(inst.palavras);
-    vetor_int montagem;
-    alocar_vetor_int(&montagem, inst.palavras.tamanho);
+    pilha_int indices_palavras;
+    alocar_pilha_int(&indices_palavras);
+    vetor_int pos_palavras;
+    alocar_vetor_int(&pos_palavras, inst.palavras.tamanho);
     matriz_char solucao;
     alocar_matriz_char(&solucao, inst.caca_palavras.linhas, inst.caca_palavras.colunas);
 
@@ -115,21 +159,21 @@ void ResolverInstancia(instancia inst){
         }
     }
     
-    printf("digite a solucao:\n");
-    scanf_vetor_int(&montagem);
-    printar_vetor_int(montagem);
+    //printf("digite a solucao:\n");
+    //scanf_vetor_int(&pos_palavras);
+    //printar_vetor_int(pos_palavras);
 
     /* gera os números */
-    
+    indices_palavras = GerarSolucao(inst, pos_palavras, inst.palavras.tamanho);
     /* escreve a solução na matriz */
     for(i = 0; i < inst.palavras.tamanho; i++){
         posicao p;
         string palavra;
         printar_matriz_char(solucao);
-        if(montagem.lista[i] != 0){
+        if(pos_palavras.lista[i] != 0){
             palavra.conteudo = inst.palavras.lista[i];
             palavra.tamanho = strlen(inst.palavras.lista[i]);
-            p = pos(montagem.lista[i], inst.caca_palavras.linhas, inst.caca_palavras.colunas);
+            p = pos(pos_palavras.lista[i], inst.caca_palavras.linhas, inst.caca_palavras.colunas);
             escrever_string_matriz(palavra, &solucao, p);
         }
         printf("\n");
@@ -137,6 +181,68 @@ void ResolverInstancia(instancia inst){
     /*  */
 
     printar_matriz_char(solucao);
+}
+
+int solucao_nula (pilha_int p){
+    int i = 0;
+    printf("verificando se a solução é a trivial\n");
+    printar_pilha_int(p);
+    for(i = 0; i < p.tamanho; i++){
+        if(p.lista[i] != 0){
+            printf("n eh trivial\n");
+            return 0;
+        }
+    }
+    printf("eh trivial\n");
+    return 1;
+}
+
+pilha_int GerarSolucao(instancia inst, vetor_int v, int tam_seq){
+    pilha_int p;
+    alocar_pilha_int(&p);
+    
+    int sol_count = 0;
+
+    /*
+    # último elemento extrapola => remover e incrementar o anterior
+    # caso contrário:
+      # pilha não ok => incrementar último
+      # caso contrário (pilha ok)
+        # pilha incompleta => add(0)
+        # pilha completa => print e incrementar último
+    */
+    empilhar(&p, 0);
+    while (1){
+        /* último elemento extrapola => remover e incrementar o anterior */
+        if(p.lista[p.topo] > v.tamanho - 1){
+            desempilhar(&p);
+            if(pilha_vazia(p) == 1)
+                break;
+            else
+                p.lista[p.topo] += 1;
+        } else {
+            if(sequencia_valida(p, inst) == 0){
+                /* pilha não ok => incrementar último */
+                p.lista[p.topo] += 1;
+            } else
+                if(p.tamanho < tam_seq)
+                    /* pilha incompleta */
+                    empilhar(&p, 0);
+                else{
+                    /* solução encontrada */
+                    printf("solução encontrada!\n");
+                    printar_pilha_int(p);
+                    sol_count++;
+                    if(solucao_nula(p) == 0){
+                        return p;
+                    }
+                    
+                    p.lista[p.topo] += 1;
+                }
+                    
+        }
+    }
+    return p;
 }
 
 /* escreve a string str na matriz de caracteres na posição pos = (x,y,orientação) */
