@@ -53,9 +53,22 @@ int sequencia_valida(pilha_int p, instancia inst){
     int r = 1;
     printf("verificando se a seguinte configuração eh valida:\n");
     printar_pilha_int(p);
-    
-    //printar_matriz_char(m);
-    int i = 0;
+
+    matriz_char rascunho;
+    int linhas = inst.caca_palavras.linhas;
+    int colunas = inst.caca_palavras.colunas;
+    alocar_matriz_char(&rascunho, linhas, colunas);
+    int i, j;
+    for(i = 0; i < linhas; i++){
+        for(j = 0; j < colunas; j++){
+            if(inst.caca_palavras.lista[i][j] == -1)
+                rascunho.lista[i][j] = '*';
+            else
+                rascunho.lista[i][j] = ' ';
+        }
+    }
+    printar_matriz_char(rascunho);
+
     for(i = 0; i < p.tamanho; i++){
         
         string palavra;
@@ -66,23 +79,35 @@ int sequencia_valida(pilha_int p, instancia inst){
         
         /* critério de bordas */
         switch (posicao_palavra.orientacao) {
-        case 'h':
-            if(posicao_palavra.coluna + strlen(inst.palavras.lista[i]) > inst.caca_palavras.colunas){
-                printf("comprimento muito longo na horizontal!\n", inst.palavras.lista[i]);
-                return 0;
-            }
-            break;
-        case 'v':
-            if(posicao_palavra.linha + strlen(inst.palavras.lista[i]) > inst.caca_palavras.linhas){
-                printf("comprimento muito longo na vertical!\n", inst.palavras.lista[i]);
-                return 0;
-            }
-            break;
-        default:
-            break;
+            case 'h':
+                if(posicao_palavra.coluna + strlen(inst.palavras.lista[i]) > inst.caca_palavras.colunas){
+                    printf("comprimento muito longo na horizontal!\n", inst.palavras.lista[i]);
+                    return 0;
+                }
+                break;
+            case 'v':
+                if(posicao_palavra.linha + strlen(inst.palavras.lista[i]) > inst.caca_palavras.linhas){
+                    printf("comprimento muito longo na vertical!\n", inst.palavras.lista[i]);
+                    return 0;
+                }
+                break;
+            default:
+                break;
         }
         
         /* critério de sobreposição */
+        for(i = 0; i < palavra.tamanho; i++){
+            switch (posicao_palavra.orientacao) {
+            case 'h':
+                
+                break;
+            case 'v':
+
+                break;
+            default:
+                break;
+            }
+        }
         //printar_matriz_char(m);
         //printf("verificando elemento %d %d\n", posicao_palavra.linha, posicao_palavra.coluna);
     }
@@ -147,40 +172,12 @@ void ResolverInstancia(instancia inst){
     alocar_vetor_int(&pos_palavras, inst.palavras.tamanho);
     matriz_char solucao;
     alocar_matriz_char(&solucao, inst.caca_palavras.linhas, inst.caca_palavras.colunas);
-
-    /* inicializa com '*' nas posições em que temos -1 */
-    int i, j;
-    for(i = 0; i < inst.caca_palavras.linhas; i++){
-        for(j = 0; j < inst.caca_palavras.colunas; j++){
-            if(inst.caca_palavras.lista[i][j] == -1)
-                solucao.lista[i][j] = '*';
-            else
-                solucao.lista[i][j] = ' ';
-        }
-    }
-    
-    //printf("digite a solucao:\n");
-    //scanf_vetor_int(&pos_palavras);
-    //printar_vetor_int(pos_palavras);
-
+    int i;
     /* gera os números */
     indices_palavras = GerarSolucao(inst, pos_palavras, inst.palavras.tamanho);
     /* escreve a solução na matriz */
-    for(i = 0; i < inst.palavras.tamanho; i++){
-        posicao p;
-        string palavra;
-        printar_matriz_char(solucao);
-        if(pos_palavras.lista[i] != 0){
-            palavra.conteudo = inst.palavras.lista[i];
-            palavra.tamanho = strlen(inst.palavras.lista[i]);
-            p = pos(pos_palavras.lista[i], inst.caca_palavras.linhas, inst.caca_palavras.colunas);
-            escrever_string_matriz(palavra, &solucao, p);
-        }
-        printf("\n");
-    }
-    /*  */
 
-    printar_matriz_char(solucao);
+    /*  */
 }
 
 int solucao_nula (pilha_int p){
@@ -230,7 +227,6 @@ pilha_int GerarSolucao(instancia inst, vetor_int v, int tam_seq){
                     empilhar(&p, 0);
                 else{
                     /* solução encontrada */
-                    printf("solução encontrada!\n");
                     printar_pilha_int(p);
                     sol_count++;
                     if(solucao_nula(p) == 0){
