@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "ED.c"
 
+#define DB(A) printf("%d\n", A)
+
 /* 
 Para este EP, foram criados algumas estruturas úteis:
     1 - instancia: armazena o caça-palavras, lista de palavras, a matriz solução e se há ou não solução
@@ -62,6 +64,8 @@ void ler_instancias(conjunto_instancias *conj){
         /* leitura da matriz */
         instancia inst;
         inst.caca_palavras = nova_matriz_int(linhas, colunas);
+        inst.solucao = nova_matriz_char(linhas, colunas);
+        inst.ha_solucao = 1;
         scan_matriz_int(&inst.caca_palavras);
 
         /* leitura das palavras */
@@ -71,8 +75,8 @@ void ler_instancias(conjunto_instancias *conj){
         scan_vetor_string(&inst.palavras);
 
         /* registro no conjunto de instancias */
-        resolver_instancia(&inst);
         conj->casos[i] = inst;
+        printf("%d %d\n", conj->casos[i].caca_palavras.linhas, conj->casos[i].caca_palavras.colunas);
         i++;
     }
     conj->quantidade = i;
@@ -81,33 +85,32 @@ void ler_instancias(conjunto_instancias *conj){
 /* */
 void resolver_instancias(conjunto_instancias *conj){
     int i;
-    for(i = 0; i < conj->quantidade; i++){}
-        resolver_instancia(&conj->casos[i]);
+    for(i = 0; i < conj->quantidade; i++)
+        resolver_instancia(&(conj->casos[i]));
 }
 
 /* */
 void resolver_instancia(instancia *inst){
+
+    printf("Resolvendo Instancia\n");
+    print_matriz_int(inst->caca_palavras);
+    print_vetor_string(inst->palavras);
+    
+
     int linhas = inst->caca_palavras.linhas;
     int colunas = inst->caca_palavras.colunas;
-    inst->ha_solucao = 1;
-    inst->solucao = nova_matriz_char(linhas, colunas);
 
     /* inicializa a matriz com '*' e ' ' */
     int i, j;
     for(i = 0; i < linhas; i++){
         for(j = 0; j < colunas; j++){
-            switch (inst->caca_palavras.lista[i][j]) {
-            case -1:
+            if(inst->caca_palavras.lista[i][j] == -1)
                 inst->solucao.lista[i][j] = '*';
-                break;
-            case 0:
+            else if(inst->caca_palavras.lista[i][j] == 0)
                 inst->solucao.lista[i][j] = ' ';
-                break;
-            default:
-                break;
-            }
         }
     }
+    
 }
 
 /* */
@@ -118,6 +121,6 @@ void mostrar_solucoes(conjunto_instancias conj){
         if(conj.casos->ha_solucao == 0)
             printf("nao ha solucao\n\n");
         else
-            print_matriz_char(conj.casos->solucao);
+            print_matriz_char(conj.casos[i].solucao);
     }
 }
