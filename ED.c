@@ -259,6 +259,46 @@ void preencher_matriz_char(matriz_char *m, char valor){
             m->lista[i][j] = valor;
 }
 
+/* indica uma posicao em relação a uma matriz e uma orientação */
+typedef struct Posicao {
+    int linha;
+    int coluna;
+    int orientacao;
+} posicao;
+
+/* escreve a string s */
+void escrever_str_matriz(matriz_char *m, string s, posicao pos){
+    int i = 0;
+    for(i = 0; i < s.tamanho; i++){
+        if(pos.orientacao == 0){
+            m->lista[pos.linha][pos.coluna + i] = s.conteudo[i];
+        } else if(pos.orientacao == 1){
+            m->lista[pos.linha + i][pos.coluna] = s.conteudo[i];
+        }
+    }
+}
+
+/* verifica se é possível inserir a string  */
+int insercao_valida(matriz_char m, string s, posicao pos){
+    /* critério de borda */
+    if(pos.linha + s.tamanho > m.linhas && pos.orientacao == 1)
+        return 0;
+    else if(pos.coluna + s.tamanho > m.colunas && pos.orientacao == 0)
+        return 0;
+    /* criterio de sobreposição */
+    int i;
+    for(i = 0; i < s.tamanho; i++){
+        if(pos.orientacao == 0){
+            if(m.lista[pos.linha][pos.coluna + i] != s.conteudo[i] && m.lista[pos.linha][pos.coluna + i] != ' ')
+                return 0;
+        } else if(pos.orientacao == 1){
+            if(m.lista[pos.linha + i][pos.coluna] != s.conteudo[i] && m.lista[pos.linha + i][pos.coluna] != ' ')
+                return 0;
+        }
+    }
+    return 1;
+}
+
 /* STRING
 Estrutura:
     1 - *palavra: contém os caracteres da string
