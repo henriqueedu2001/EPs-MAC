@@ -280,6 +280,8 @@ void escrever_str_matriz(matriz_char *m, string s, posicao pos){
 
 /* verifica se é possível inserir a string  */
 int insercao_valida(matriz_char m, string s, posicao pos){
+    //printf("tentando inserir %s na posicao %d %d %d\n", s.conteudo, pos.linha, pos.coluna, pos.orientacao);
+    //print_matriz_char(m);
     /* critério de borda */
     if(pos.linha + s.tamanho > m.linhas && pos.orientacao == 1)
         return 0;
