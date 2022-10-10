@@ -125,7 +125,6 @@ void ler_instancias(conjunto_instancias *conj){
 
         /* registro no conjunto de instancias */
         conj->casos[i] = inst;
-        printf("%d %d\n", conj->casos[i].caca_palavras.linhas, conj->casos[i].caca_palavras.colunas);
         i++;
     }
     conj->quantidade = i;
@@ -134,17 +133,17 @@ void ler_instancias(conjunto_instancias *conj){
 /* */
 void resolver_instancias(conjunto_instancias *conj){
     int i;
-    for(i = 0; i < conj->quantidade; i++)
+    for(i = 0; i < conj->quantidade; i++){
+        printf("Instancia %d\n", i + 1);
         resolver_instancia(&(conj->casos[i]));
+        printf("\n");
+    }
+        
 }
 
 /* */
 void resolver_instancia(instancia *inst){
-    printf("Resolvendo Instancia\n");
-
-    printf("FAZENDO BACKTRACKING\n");
     pilha_int p = backtrack(*inst);
-    printf("BACKTRACKING CONCLUIDO\n");
 }
 
 pilha_int backtrack(instancia inst){
@@ -154,16 +153,17 @@ pilha_int backtrack(instancia inst){
     empilhar_pilha_int(&p, 0);
     while(1){
         /* começar verificando limite de tamanho do último item */
-        
         if(p.lista[p.topo] > limite){
             /* último elemento extrapola => remover e incrementar o anterior, se p != vazia */
             desempilhar_pilha_int(&p);
-            if(vazia_pilha_int(p) == 1)
+            if(vazia_pilha_int(p) == 1){
+                printf("Sem solucao\n");
                 break;
+            }
+                
             else
                 p.lista[p.topo] += 1;
         } else {
-            print_pilha_int(p);
             if(criterio(p, inst) == 0){
                 /* pilha não ok => incrementar último */
                 p.lista[p.topo] += 1;
@@ -229,9 +229,9 @@ int criterio(pilha_int p, instancia inst){
                 }
             }
         }
-        
+        print_matriz_char(rascunho);
     }
-    print_matriz_char(rascunho);
+    
     free(rascunho.lista);
     return 1;
 }
