@@ -39,8 +39,6 @@ void resolver_instancia(instancia *inst);
 
 int posicoes_validas(pilha_int p, instancia inst);
 posicao pos(int indice, int linhas, int colunas);
-int eh_solucao(pilha_int p, instancia inst);
-void montar_solucao(pilha_int p, instancia inst);
 
 pilha_int backtrack(instancia inst);
 
@@ -48,52 +46,11 @@ int criterio(pilha_int p, instancia inst);
 
 void inicializar(matriz_char *m, instancia inst);
 
-void solve(){
+int main(){
     conjunto_instancias conj;
     conj.casos = malloc(10*sizeof(instancia));
     ler_instancias(&conj);
     resolver_instancias(&conj);
-}
-
-void teste(){
-    instancia inst;
-    scanf(" %d %d", &inst.caca_palavras.linhas, &inst.caca_palavras.colunas);
-    inst.caca_palavras = nova_matriz_int(inst.caca_palavras.linhas, inst.caca_palavras.colunas);
-    scan_matriz_int(&inst.caca_palavras);
-    scanf(" %d", &inst.palavras.tamanho);
-    inst.palavras = novo_vetor_string(inst.palavras.tamanho);
-    scan_vetor_string(&inst.palavras);
-    print_matriz_int(inst.caca_palavras);
-    print_vetor_string(inst.palavras);
-
-    int i, j, k, l;
-    pilha_int p = nova_pilha_int();
-    for(i = 0; i < inst.palavras.tamanho; i++){
-        int x;
-        scanf(" %d", &x);
-        empilhar_pilha_int(&p, x);
-    }
-    for(i = 0; i < 32; i++){
-        for(j = 0; j < 32; j++){
-            for(k = 0; k < 32; k++){
-                p.lista[0] = i;
-                p.lista[1] = j;
-                p.lista[2] = k;
-                if(criterio(p, inst)){
-                    print_pilha_int(p);
-                }
-            }
-        }
-    }
-    printf("Finalizado com sucesso\n");
-}
-
-int main(){
-    
-    solve();
-    
-    
-
     return 0;
 }
 
@@ -139,7 +96,6 @@ void resolver_instancias(conjunto_instancias *conj){
         resolver_instancia(&(conj->casos[i]));
         printf("\n");
     }
-        
 }
 
 /* */
@@ -182,20 +138,18 @@ pilha_int backtrack(instancia inst){
 }
 
 int criterio(pilha_int p, instancia inst){
-    int i, j;
-    
     
     /* verificar se é possível escrever palavras no rascunho */
     int linhas = inst.caca_palavras.linhas;
     int colunas = inst.caca_palavras.colunas;
     matriz_char rascunho = nova_matriz_char(linhas, colunas);
     inicializar(&rascunho, inst);
-    
+    int i, j;
     for(i = 0; i < p.qtd; i++){
         r++;
         
         if(p.lista[i] != 0){
-            DB(r);
+            
             string palavra = inst.palavras.strings[i];
             posicao pos_palavra = pos(p.lista[i], linhas, colunas);
             if(insercao_valida(rascunho, palavra, pos_palavra)){

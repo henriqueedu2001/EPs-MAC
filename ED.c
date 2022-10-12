@@ -260,8 +260,11 @@ void preencher_matriz_char(matriz_char *m, char valor){
 }
 
 void destruir_matriz_char(matriz_char *m){
+    int i = 0;
+    for(i = 0; i < m->linhas; i++){
+        free(m->lista[i]);
+    }
     free(m->lista);
-    free(m);
 }
 
 /* indica uma posicao em relação a uma matriz e uma orientação */
