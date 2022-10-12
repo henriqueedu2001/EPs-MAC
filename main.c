@@ -2,6 +2,7 @@
 #include "ED.c"
 
 #define DB(A) printf("%d\n", A)
+int r = 0;
 
 /* 
 Para este EP, foram criados algumas estruturas úteis:
@@ -159,9 +160,7 @@ pilha_int backtrack(instancia inst){
             if(vazia_pilha_int(p) == 1){
                 printf("Sem solucao\n");
                 break;
-            }
-                
-            else
+            } else
                 p.lista[p.topo] += 1;
         } else {
             if(criterio(p, inst) == 0){
@@ -191,9 +190,12 @@ int criterio(pilha_int p, instancia inst){
     int colunas = inst.caca_palavras.colunas;
     matriz_char rascunho = nova_matriz_char(linhas, colunas);
     inicializar(&rascunho, inst);
-
+    
     for(i = 0; i < p.qtd; i++){
+        r++;
+        
         if(p.lista[i] != 0){
+            DB(r);
             string palavra = inst.palavras.strings[i];
             posicao pos_palavra = pos(p.lista[i], linhas, colunas);
             if(insercao_valida(rascunho, palavra, pos_palavra)){
@@ -204,7 +206,7 @@ int criterio(pilha_int p, instancia inst){
             }
         }
     }
-    
+
     /* eliminação das soluções triviais da forma 0 0 0 0 .. 0 0 */
     int eh_nula = 1;
     for(i = 0; i < p.qtd && p.qtd == inst.palavras.tamanho; i++){
