@@ -259,6 +259,11 @@ void preencher_matriz_char(matriz_char *m, char valor){
             m->lista[i][j] = valor;
 }
 
+void destruir_matriz_char(matriz_char *m){
+    free(m->lista);
+    free(m);
+}
+
 /* indica uma posicao em relação a uma matriz e uma orientação */
 typedef struct Posicao {
     int linha;

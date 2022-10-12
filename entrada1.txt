@@ -8,9 +8,10 @@ gato
 ar
 arte
 pexe
-ovo
+oleo
 gota
-1 5 18 13 20
+0 0
+1 5 18 13 20 0
 
 0 0
 
@@ -25,6 +26,13 @@ art
 rom
 0 0
 
+2 2
+0 -1
+-1 0
+3
+oi
+si
+nao
 3 4
 -1 0 0 -1
 0 0 0 0
@@ -42,3 +50,22 @@ i j k l
 m n o p
 1 1 0
 gh
+
+5 4
+-1 0 0 0
+0 0 0 0
+0 0 -1 0
+0 0 0 0
+0 -1 0 0
+10
+ad
+antas
+carn
+casa
+do
+lado
+lua
+os
+soda
+ur
+0 0

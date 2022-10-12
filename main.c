@@ -199,7 +199,7 @@ int criterio(pilha_int p, instancia inst){
             if(insercao_valida(rascunho, palavra, pos_palavra)){
                 escrever_str_matriz(&rascunho, palavra, pos_palavra);
             } else{
-                free(rascunho.lista);
+                destruir_matriz_char(&rascunho);
                 return 0;
             }
         }
@@ -214,7 +214,7 @@ int criterio(pilha_int p, instancia inst){
         }
     }
     if(eh_nula && p.qtd == inst.palavras.tamanho){
-        free(rascunho.lista);
+        destruir_matriz_char(&rascunho);
         return 0;
     }
     
@@ -223,7 +223,7 @@ int criterio(pilha_int p, instancia inst){
         for(i = 0; i < linhas; i++){
             for(j = 0; j < colunas; j++){
                 if(rascunho.lista[i][j] == ' '){
-                    free(rascunho.lista);
+                    destruir_matriz_char(&rascunho);
                     return 0;
                     break;
                 }
@@ -232,7 +232,7 @@ int criterio(pilha_int p, instancia inst){
         print_matriz_char(rascunho);
     }
     
-    free(rascunho.lista);
+    destruir_matriz_char(&rascunho);
     return 1;
 }
 
