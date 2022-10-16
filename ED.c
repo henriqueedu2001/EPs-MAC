@@ -288,14 +288,28 @@ void escrever_str_matriz(matriz_char *m, string s, posicao pos){
 
 /* verifica se é possível inserir a string  */
 int insercao_valida(matriz_char m, string s, posicao pos){
-    //printf("tentando inserir %s na posicao %d %d %d\n", s.conteudo, pos.linha, pos.coluna, pos.orientacao);
-    //print_matriz_char(m);
     /* critério de borda */
     if(pos.linha + s.tamanho > m.linhas && pos.orientacao == 1)
         return 0;
     else if(pos.coluna + s.tamanho > m.colunas && pos.orientacao == 0)
         return 0;
-    /* criterio de sobreposição */
+    
+    /* critério de encosto (início da string) */
+    if(pos.orientacao == 0){
+        if(pos.coluna != 0){
+            if(m.lista[pos.linha][pos.coluna - 1] != '*'){
+                return 0;
+            }
+        }
+    } else if(pos.orientacao == 1){
+        if(pos.linha != 0){
+            if(m.lista[pos.linha - 1][pos.coluna] != '*'){
+                return 0;
+            }
+        }
+    }
+    /* critério de encosto (fim da string) */
+    /* critério de sobreposição */
     int i;
     for(i = 0; i < s.tamanho; i++){
         if(pos.orientacao == 0){
